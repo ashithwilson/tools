@@ -1,0 +1,10 @@
+# global wildcard pattern
+*.key               filter=git-crypt diff=git-crypt
+# Private document/folders
+# *PRIVATE*         filter=git-crypt diff=git-crypt
+#
+# ALL files under a certain sub directory
+subfolder/**/*      filter=git-crypt diff=git-crypt
+#
+# A specific file
+subdir/secretfile   filter=git-crypt diff=git-crypt
