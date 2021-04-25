@@ -8,7 +8,6 @@ main() {
   else
     run_vm && start_ssh
   fi
-
   #On user exit,
   shutdown_prompt
 }
@@ -34,8 +33,9 @@ shutdown_prompt() {
   read -r -n1 -t 3 -p "Do you want to shutdown the VM? [y/n] " input
   echo ""
   if [[ "$input" == "y" ]] || [[ "$input" == "Y" ]]; then
-    echo -ne "Shutting down VM... "
-    VBoxManage controlvm "$vm_name" savestate
+    echo "Shutting down VM in background... "
+    # Shutdown VM in background and return prompt ASAP
+    VBoxManage controlvm "$vm_name" savestate > /dev/null 2>&1 & 
   else
     echo "Not shuting down VM"
   fi
