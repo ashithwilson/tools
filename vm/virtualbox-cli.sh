@@ -26,19 +26,13 @@ start_ssh() {
 }
 
 run_vm() {
-  VBoxManage startvm "$vm_name"
+  VBoxManage startvm "$vm_name" --type headless
 }
 
 shutdown_prompt() {
-  read -r -n1 -t 3 -p "Do you want to shutdown the VM? [y/n] " input
-  echo ""
-  if [[ "$input" == "y" ]] || [[ "$input" == "Y" ]]; then
-    echo "Shutting down VM in background... "
+    echo "Hibernating VM '$vm_name' in background... "
     # Shutdown VM in background and return prompt ASAP
     VBoxManage controlvm "$vm_name" savestate > /dev/null 2>&1 & 
-  else
-    echo "Not shuting down VM"
-  fi
 }
 
 main "$@"
