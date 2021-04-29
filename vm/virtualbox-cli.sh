@@ -8,8 +8,8 @@ main() {
   else
     run_vm && start_ssh
   fi
-  #On user exit,
-  shutdown_prompt
+  #On SSH close,
+  hibernate_vm
 }
 
 vm_running() {
@@ -29,9 +29,9 @@ run_vm() {
   VBoxManage startvm "$vm_name" --type headless
 }
 
-shutdown_prompt() {
+hibernate_vm() {
     echo "Hibernating VM '$vm_name' in background... "
-    # Shutdown VM in background and return prompt ASAP
+    # hibernate VM in background and return prompt
     VBoxManage controlvm "$vm_name" savestate > /dev/null 2>&1 & 
 }
 
