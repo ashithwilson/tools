@@ -19,9 +19,7 @@ vm_running() {
 }
 
 start_ssh() {
-  echo "--------------"
-  echo "  Trying SSH"
-  echo "--------------"
+  echo "Trying SSH..."
   ssh ashes@localhost -p2222
 }
 
