@@ -26,10 +26,28 @@ export PATH="/usr/local/sbin:/usr/local/opt/python@3.8/bin:$HOME/bin:/usr/local/
 
 #functions
 function gpr() {
+  # Opens git PR for current branch
+  git rev-parse || return 1
   github_url=$(git remote -v | awk '/fetch/{print $2}' | sed -Ee 's#(git@|git://)#https://#' -e 's@com:@com/@' -e 's%\.git$%%' | awk '/github/')
   branch_name=$(git symbolic-ref HEAD | cut -d"/" -f 3,4)
   pr_url="${github_url}/compare/${branch_name}"
   open "$pr_url"
+}
+
+function gw(){
+  # Opens Github webui from PWD or filename
+  git_remote_url=$(git remote -v | awk '/fetch/{print $2}' | sed -Ee 's#(git@|git://)#https://#' -e 's@com:@com/@' -e 's%\.git$%%' | awk '/github/')
+  base_repo=$(git rev-parse --show-toplevel)
+  # parameter expr url_path = PWD - base_repo
+  url_path=${PWD#"$base_repo"}
+  branch_name=$(git branch --show-current)
+  url=${git_remote_url}/tree/${branch_name}${url_path}
+  # If filename provided as argument, open the file instead of tree
+  if [[ "$#" -gt 0 ]]; then
+    file_name="$@"
+    [[ -f "$file_name" ]] && url=${git_remote_url}/blob/${branch_name}${url_path}/${file_name}
+  fi
+  echo "$url" && open "$url"
 }
 
 # Alias
