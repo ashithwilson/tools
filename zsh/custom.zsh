@@ -38,16 +38,29 @@ function gw(){
   # Opens Github webui from PWD or filename
   git_remote_url=$(git remote -v | awk '/fetch/{print $2}' | sed -Ee 's#(git@|git://)#https://#' -e 's@com:@com/@' -e 's%\.git$%%' | awk '/github/')
   base_repo=$(git rev-parse --show-toplevel)
+  fname=${@:-"$PWD"}
+  fname=$(realpath -e "$fname")
+  type=tree
+  [[ -f "$fname" ]] && type=blob
   # parameter expr url_path = PWD - base_repo
-  url_path=${PWD#"$base_repo"}
+  url_path=${fname#"$base_repo"}
   branch_name=$(git branch --show-current)
-  url=${git_remote_url}/tree/${branch_name}${url_path}
-  # If filename provided as argument, open the file instead of tree
-  if [[ "$#" -gt 0 ]]; then
-    file_name="$@"
-    [[ -f "$file_name" ]] && url=${git_remote_url}/blob/${branch_name}${url_path}/${file_name}
-  fi
+  url=${git_remote_url}/${type}/${branch_name}${url_path}
   echo "$url" && open "$url"
+}
+
+function ctmp() {
+  # Create and open a new tmp file for new day
+  local base_dir="/Users/ashith/Documents/daily-scratch-pad"
+
+  local dir="$base_dir"$(date "+/%Y/%m/")
+  [[ -d "$dir" ]] || mkdir -p "$dir"
+  local fname=${dir}$(date "+%d").md
+  if [[ -f "$fname" ]]; then
+    code "$fname"
+  else
+    touch "$fname" && code "$fname"
+  fi
 }
 
 # Alias
@@ -55,5 +68,5 @@ alias ll='exa -al'
 alias lll='ll'
 alias l='ll'
 alias cdw='cd /Users/ashith/Documents/cloudera'
-alias cdp='/Users/ashith/Documents/personal'
+alias cdp='cd /Users/ashith/Documents/personal'
 alias glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --branches"
