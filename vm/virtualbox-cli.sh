@@ -1,6 +1,6 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 vm_name="Ubuntu 20"
+ssh_command="ssh ashes@localhost -p2222"
 
 main() {
   if vm_running; then
@@ -20,7 +20,7 @@ vm_running() {
 
 start_ssh() {
   echo "Trying SSH..."
-  ssh ashes@localhost -p2222
+  ${ssh_command}
 }
 
 run_vm() {
