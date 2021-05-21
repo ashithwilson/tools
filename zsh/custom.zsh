@@ -36,10 +36,11 @@ function gpr() {
 
 function gw(){
   # Opens Github webui from PWD or filename
+  git rev-parse || return $?
   git_remote_url=$(git remote -v | awk '/fetch/{print $2}' | sed -Ee 's#(git@|git://)#https://#' -e 's@com:@com/@' -e 's%\.git$%%' | awk '/github/')
   base_repo=$(git rev-parse --show-toplevel)
-  fname=${@:-"$PWD"}
-  fname=$(realpath -e "$fname")
+  fname=${1:-"$PWD"}
+  fname=$(realpath "$fname")
   type=tree
   [[ -f "$fname" ]] && type=blob
   # parameter expr url_path = PWD - base_repo
@@ -70,3 +71,4 @@ alias l='ll'
 alias cdw='cd /Users/ashith/Documents/cloudera'
 alias cdp='cd /Users/ashith/Documents/personal'
 alias glog="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --branches"
+alias c='code'
